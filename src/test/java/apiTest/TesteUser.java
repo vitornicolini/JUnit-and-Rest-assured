@@ -4,19 +4,18 @@ package apiTest;
 // Bibliotecas
 
 
+import com.google.gson.Gson;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 
 // Classe
@@ -163,7 +162,7 @@ public class TesteUser { // inicio da classe
     @DisplayName("Testar inclusão de usuários via arquivo CSV to Json")
     @CsvFileSource(resources = "csv/massaUser.csv", numLinesToSkip = 1, delimiter = ',')
 
-    public void testarIncluirUserSCV(
+    public void testarIncluirUserCSV(
             String id,
             String username,
             String firstName,
@@ -173,16 +172,21 @@ public class TesteUser { // inicio da classe
             String phone,
             String userStatus) {
         // carregar os dados do json
-        StringBuilder jsonBody = new StringBuilder("{");
-        jsonBody.append("'id' : " + id + "," );
-        jsonBody.append("'username' : " + username + ",");
-        jsonBody.append("'firstName' : " + firstName + ",");
-        jsonBody.append("'lastName' : " + lastName + ",");
-        jsonBody.append("'email' : " + email + ",");
-        jsonBody.append("'password' : " + password + ",");
-        jsonBody.append("'phone' : " + phone + ",");
-        jsonBody.append("'userStatus' : " + userStatus + ",");
-        jsonBody.append("}");
+
+        User user = new User();
+
+        user.id = id;
+        user.username = username;
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.email = email;
+        user.password = password;
+        user.phone = phone;
+        user.userStatus = userStatus;
+
+        Gson gson = new Gson();
+        String jsonBody = gson.toJson(user);
+
         // realizar o teste
 
         given()
@@ -202,4 +206,4 @@ public class TesteUser { // inicio da classe
     } //  fim incluir CSV
 
 
-} // fim da classe
+    } // fim da class
